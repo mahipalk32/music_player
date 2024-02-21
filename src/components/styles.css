@@ -1,0 +1,170 @@
+body {
+  background-color: #fdf0f0;
+}
+
+img {
+  height: 200px;
+  width: 200px;
+  transition: transform 0.3s;
+  border-radius: 50%;
+  margin: 50px 0;
+}
+
+img:hover {
+  transform: scale(1.1);
+}
+
+.audio-player-container {
+  display: flex;
+  align-items: center;
+  margin: 50px;
+  background-color: #f3f8ff;
+}
+
+.audio-player-content {
+  display: flex;
+  align-items: center;
+  margin-right: 20px; /* Adjust margin as needed */
+  flex-direction: column;
+  width: 50%;
+}
+
+.song-list {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.label-div {
+  width: 420px;
+  margin-left: 10px;
+}
+
+.buttons-div {
+  display: flex;
+  justify-content: center;
+}
+
+.song-div {
+  display: flex;
+  align-items: center;
+  margin: 20px 10px;
+}
+
+.buttons-div button {
+  margin: 10px;
+  width: 40px;
+  display: inline-block;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  background-color: #332941;
+  color: white;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  color: #0a1d56;
+}
+
+audio::-webkit-media-controls-panel {
+  color: #f3f8ff;
+  background-color: #bfcfe7 !important;
+}
+
+.upload-container {
+  position: absolute;
+  left: 25%;
+  right: 25%;
+  top: 10%;
+  background-color: #f3f8ff;
+  display: flex;
+  justify-content: center;
+  height: 300px;
+  align-items: center;
+  flex-direction: column;
+}
+
+.upload-subdiv {
+  display: flex;
+  flex-direction: column;
+}
+
+.upload-button {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.upload-button button {
+  margin: 10px;
+  width: 200px;
+  display: inline-block;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  background-color: #332941;
+  color: white;
+}
+
+input[type="file"] {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 4px;
+}
+
+input[type="file"]:hover {
+  background-color: #e0e0e0;
+}
+
+.header-main {
+  height: 70px;
+  background-color: #0c2d57;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.child1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 25%;
+  font-family: "Dancing Script", cursive;
+  font-size: 2rem;
+  color: #fff;
+}
+
+.child2 {
+  display: flex;
+  flex: end;
+  justify-content: flex-end;
+  align-items: center;
+  width: 75%;
+}
+
+.child2 label {
+  margin-right: 5%;
+  color: white;
+  cursor: pointer;
+  font-family: sans-serif;
+  transition: transform 0.3s;
+}
+
+label:hover {
+  transform: scale(1.2);
+}

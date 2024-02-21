@@ -1,134 +1,16 @@
-// import React, { useEffect, useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { MdSkipNext } from "react-icons/md";
+import { MdSkipPrevious } from "react-icons/md";
+import { IoIosPlay } from "react-icons/io";
+import { MdOutlinePause } from "react-icons/md";
+import "./styles.css";
+import music from "../music.jpg";
 
-// function PlayList() {
-//   const [songList, setSongList] = useState([]);
-
-//   useEffect(() => {
-//     function getAllSongs() {
-//       const indexedDB = window.indexedDB;
-//       const request = indexedDB.open("songsDB", 1);
-
-//       request.onerror = function (event) {
-//         console.log("An error occured");
-//         console.log(event);
-//       };
-
-//       request.onsuccess = () => {
-//         const db = request.result;
-//         const transaction = db.transaction("songs", "readwrite");
-//         const store = transaction.objectStore("songs");
-
-//         const list = store.getAll();
-//         setSongList(list);
-//       };
-
-//       request.onerror = (err) => {
-//         console.error(`Error to get all students: ${err}`);
-//       };
-//     }
-
-//     getAllSongs();
-//     console.log("I am outer result", songList.result);
-//   }, []);
-
-//   return (
-//     <div>
-//       <ul style={{ listStyleType: "none", padding: 0 }}>
-//         {songList.result.map((song, index) => (
-//           <li key={index}>
-//             <audio controls>
-//               <source src={song.value} type="audio/mpeg" />
-//               Your browser does not support the audio element.
-//             </audio>
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// }
-
-// export default PlayList;
-
-// import React, { useEffect, useState } from "react";
-
-// function PlayList() {
-//   const [songList, setSongList] = useState([]);
-
-//   useEffect(() => {
-//     function getAllSongs() {
-//       const indexedDB = window.indexedDB;
-//       const request = indexedDB.open("songsDB", 1);
-
-//       request.onerror = function (event) {
-//         console.error(
-//           "An error occurred while opening the database:",
-//           event.target.error
-//         );
-//       };
-
-//       request.onsuccess = () => {
-//         const db = request.result;
-//         const transaction = db.transaction("songs", "readwrite");
-//         const store = transaction.objectStore("songs");
-
-//         const getAllRequest = store.getAll();
-
-//         getAllRequest.onsuccess = function (event) {
-//           setSongList(event.target.result);
-//         };
-
-//         getAllRequest.onerror = function (err) {
-//           console.error(`Error getting all songs: ${err}`);
-//         };
-//       };
-
-//       request.onerror = (err) => {
-//         console.error(`Error opening database: ${err}`);
-//       };
-//     }
-
-//     getAllSongs();
-//   }, []);
-
-//   console.log(songList);
-
-//   return (
-//     <div
-//       style={{
-//         position: "absolute",
-//         left: "25%",
-//         right: "25%",
-//         display: "flex",
-//         justifyContent: "center",
-//         alignItems: "center",
-//         marginTop:"50px"
-//       }}
-//     >
-//       <div style={{width:"75%"}}>
-//         <h2 style={{textAlign:"center", marginBottom:"20px"}}>Playlist</h2>
-//         <ul style={{ listStyleType: "none", padding: 0 }}>
-//           {songList.map((song, index) => (
-//             <li key={index}>
-//               <audio controls style={{width:"100%"}}>
-//                 <source src={song.value} type="audio/mpeg" />
-//                 Your browser does not support the audio element.
-//               </audio>
-//             </li>
-//           ))}
-//         </ul>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default PlayList;
-
-
-import React, { useEffect, useState } from "react";
-
-function PlayList() {
+const AudioPlayer = () => {
   const [songList, setSongList] = useState([]);
-  const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(null);
 
   useEffect(() => {
     function getAllSongs() {
@@ -166,46 +48,143 @@ function PlayList() {
     getAllSongs();
   }, []);
 
-  const playAudio = (src) => {
-    const audioElement = new Audio(src);
-    audioElement.play();
-    setCurrentlyPlaying(audioElement);
-  };
+  useEffect(() => {
+    const handleEnded = () => {
+      if (currentTrackIndex === songList.length - 1) {
+        setIsPlaying(false);
+      } else {
+        setCurrentTrackIndex((prevIndex) => prevIndex + 1);
+      }
+    };
 
-  const stopCurrentlyPlaying = () => {
-    if (currentlyPlaying) {
-      currentlyPlaying.pause();
-      setCurrentlyPlaying(null);
+    const currentAudio = audioRef.current;
+    if (currentAudio) {
+      currentAudio.addEventListener("ended", handleEnded);
+    }
+
+    return () => {
+      if (currentAudio) {
+        currentAudio.removeEventListener("ended", handleEnded);
+      }
+    };
+  }, [currentTrackIndex, isPlaying, songList]);
+
+  useEffect(() => {
+    const currentAudio = audioRef.current;
+    if (!currentAudio) return;
+
+    if (isPlaying) {
+      currentAudio.load();
+      currentAudio
+        .play()
+        .catch((error) => console.error("Error playing audio:", error));
+    } else {
+      currentAudio.pause();
+    }
+  }, [currentTrackIndex, isPlaying]);
+
+  const play = (index) => {
+    if (index === currentTrackIndex && isPlaying) {
+      setIsPlaying(false);
+    } else {
+      setCurrentTrackIndex(index);
+      setIsPlaying(true);
+      localStorage.setItem("lastPlayed", index);
     }
   };
 
+  const next = (index) => {
+    if (index < songList.length) {
+      setCurrentTrackIndex(index);
+      setIsPlaying(true);
+      localStorage.setItem("lastPlayed", index);
+    }
+
+    if (index === songList.length) {
+      setCurrentTrackIndex(index - 1);
+      setIsPlaying(true);
+      localStorage.setItem("lastPlayed", index - 1);
+    }
+  };
+
+  const last = (index) => {
+    if (index === -1) {
+      setCurrentTrackIndex(index + 1);
+      setIsPlaying(true);
+      localStorage.setItem("lastPlayed", index + 1);
+    }
+
+    if (index >= 0) {
+      setCurrentTrackIndex(index);
+      setIsPlaying(true);
+      localStorage.setItem("lastPlayed", index);
+    }
+  };
+
+  useEffect(() => {
+    const lastPlayedIndex = localStorage.getItem("lastPlayed");
+    if (lastPlayedIndex === null || lastPlayedIndex === undefined) {
+      localStorage.setItem("lastPlayed", -1);
+    } else {
+      setCurrentTrackIndex(lastPlayedIndex);
+      setIsPlaying(true);
+    }
+  }, []);
+
+  const currentSong = songList[currentTrackIndex] || {};
+
   return (
-    <div
-      style={{
-        position: "absolute",
-        left: "25%",
-        right: "25%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop:"50px"
-      }}
-    >
-      <div style={{width:"75%"}}>
-        <h2 style={{textAlign:"center", marginBottom:"20px"}}>Playlist</h2>
-        <ul style={{ listStyleType: "none", padding: 0 }}>
-          {songList.map((song, index) => (
-            <li key={index}>
-              <button onClick={() => {
-                stopCurrentlyPlaying();
-                playAudio(song.value);
-              }}>Play</button>
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div className="audio-player-container">
+      {songList.length > 0 && (
+        <>
+          <div className="audio-player-content">
+            <h3>Current Playing</h3>
+            <div className="label-div">
+              <label style={{ display: "flex", justifyContent: "center" }}>
+                {currentSong.name}
+              </label>
+            </div>
+            <div>
+              <img src={music} alt="music" />
+            </div>
+            <div>
+              <audio ref={audioRef} controls>
+                <source src={currentSong.value} type="audio/mp3" />
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+          </div>
+          <div className="song-list">
+            <h3>Play List</h3>
+            <div>
+              {songList.map((song, index) => (
+                <div key={song.id} className="song-div">
+                  <div className="label-div">
+                    <label>{song.name}</label>
+                  </div>
+                  <div className="buttons-div">
+                    <button onClick={() => last(index - 1)}>
+                      <MdSkipPrevious />
+                    </button>
+                    <button onClick={() => play(index)}>
+                      {isPlaying && currentTrackIndex === index ? (
+                        <MdOutlinePause />
+                      ) : (
+                        <IoIosPlay />
+                      )}
+                    </button>
+                    <button onClick={() => next(index + 1)}>
+                      <MdSkipNext />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
-}
+};
 
-export default PlayList;
+export default AudioPlayer;

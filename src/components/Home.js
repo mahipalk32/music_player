@@ -1,15 +1,18 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import "./styles.css";
 
-function Home () {
-    return (
-        <div style={{margin:"20px 20px auto", height:"60px", backgroundColor:"purple", textAlign:"left"}}>
-            <ul style={{display:"flex", listStyle:"none"}}>
-                <li style={{margin:"10px 15px" , color:"white", cursor:"pointer"}}>Title</li>
-                <li style={{margin:"10px 15px", color:"white", cursor:"pointer"}}>Upload</li>
-                <li style={{margin:"10px 15px", color:"white", cursor:"pointer"}}>Play List</li>
-            </ul>
-        </div>
-    )
+function Home() {
+  const navigate = useNavigate();
+  return (
+    <div className="header-main">
+      <div className="child1">MUSIC</div>
+      <div className="child2">
+        <label onClick={() => navigate("/")}>Upload</label>
+        <label onClick={() => navigate("/playlist")}>Play List</label>
+      </div>
+    </div>
+  );
 }
 
 export default Home;
