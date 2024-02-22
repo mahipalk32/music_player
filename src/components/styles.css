@@ -88,7 +88,7 @@ audio::-webkit-media-controls-panel {
   background-color: #f3f8ff;
   display: flex;
   justify-content: center;
-  height: 300px;
+  height: 450px;
   align-items: center;
   flex-direction: column;
 }
@@ -167,4 +167,10 @@ input[type="file"]:hover {
 
 label:hover {
   transform: scale(1.2);
+}
+
+p{
+  color: red;
+  margin: 16px auto;
+  padding: 7% 15%;
 }

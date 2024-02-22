@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./styles.css";
 
 function UploadSongs() {
@@ -35,8 +35,16 @@ function UploadSongs() {
 
         const store = transaction.objectStore("songs");
         const songName = selectedFile.name;
-        setId(id + 1); // Increment the id
-        store.add({ id: id, name: songName, value: reader.result });
+        const getRequest = store.get(id);
+        getRequest.onsuccess = function (event) {
+          const existingRecord = getRequest.result;
+          if (existingRecord) {
+            store.add({ id: id + 1, name: songName, value: reader.result });
+          } else {
+            store.add({ id: id, name: songName, value: reader.result });
+          }
+        };
+        // store.add({ id: id, name: songName, value: reader.result });
       };
     };
 
@@ -46,6 +54,11 @@ function UploadSongs() {
   return (
     <div className="upload-container">
       <h3>Upload</h3>
+      <p>
+        <strong>NOTE:</strong> <br /> Before going to playlist, first upload all
+        the songs then play the songs.
+      </p>
+
       <div className="upload-subdiv">
         <div>
           <input
