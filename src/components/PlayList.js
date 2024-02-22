@@ -13,6 +13,21 @@ const AudioPlayer = () => {
   const audioRef = useRef(null);
 
   useEffect(() => {
+    const indexedDB = window.indexedDB;
+      const request = indexedDB.open("songsDB", 1);
+
+      request.onerror = function (event) {
+        console.error("Error opening database:", event.target.error);
+      };
+
+      request.onupgradeneeded = function (event) {
+        const db = event.target.result;
+        if (!db.objectStoreNames.contains("songs")) {
+          db.createObjectStore("songs", { keyPath: "id" });
+        }}
+  }, [])
+
+  useEffect(() => {
     function getAllSongs() {
       const indexedDB = window.indexedDB;
       const request = indexedDB.open("songsDB", 1);
